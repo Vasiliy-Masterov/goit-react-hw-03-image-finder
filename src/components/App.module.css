@@ -1,20 +1,6 @@
-.app_container {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #010101;
-}
-
-.title_phonebook {
-  font-size: 50px;
-  font-weight: 500;
-  margin: 0px 0px 20px 0px;
-}
-
-.title_contacts {
-  font-size: 40px;
-  font-weight: 500;
-  margin: 0px 0px 20px 0px;
+.App {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 16px;
+  padding-bottom: 24px;
 }

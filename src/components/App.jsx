@@ -1,62 +1,70 @@
-import { Component } from 'react';
-import { ContactForm } from './ContactForm';
-import { Filter } from './Filter';
-import { ContactList } from './ContactList';
+import React, { Component } from 'react';
+import axios from 'axios';
+import Notiflix from 'notiflix';
 import styles from './App.module.css';
+import { Searchbar } from './Searchbar';
+import { ImageGallery } from './ImageGallery';
+import { Loader } from './Loader';
+// import { Modal } from './Modal';
+import { Button } from './Button';
+
+const PIXABAY_KEY = '25809714-fb9ca043e2372697e049be88c';
+const BASE_URL = 'https://pixabay.com/api/';
 
 export class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
+    imageGallery: [],
+    searchQuery: '',
+    pageLimit: 12,
+    numberPage: 4,
+    isLoading: false,
   };
 
-  handleAddContact = contactData => {
-    const arrayContacts = this.state.contacts;
-    const arrayNames = arrayContacts.map(contact => contact.name);
-    if (arrayNames.includes(contactData.name)) {
-      return alert(`${contactData.name} is already in contacts`);
+  async componentDidUpdate() {
+    const { searchQuery, pageLimit, numberPage } = this.state;
+    this.setState({ isLoading: true });
+    try {
+      const response = await axios.get(BASE_URL, {
+        params: {
+          key: PIXABAY_KEY,
+          q: searchQuery,
+          image_type: 'photo',
+          orientation: 'gorizontal',
+          safesearch: true,
+          per_page: pageLimit,
+          page: numberPage,
+        },
+      });
+      this.setState({ imageGallery: response.data.hits });
+      this.setState({ isLoading: false });
+    } catch {
+      Notiflix.Notify.failure("Sorry, it's error");
+    } finally {
+      this.setState({ isLoading: false });
     }
-    arrayContacts.push(contactData);
-    this.setState({ contacts: arrayContacts });
-  };
+  }
 
-  handleFindContacts = event => {
-    this.setState({ filter: event.target.value });
-  };
-
-  handleDeleteContact = event => {
-    const value = event.target.name;
-    const contactList = this.state.contacts;
-    const nameList = contactList.map(item => item.name);
-    const index = nameList.indexOf(value);
-    contactList.splice(index, 1);
-    this.setState({ contacts: contactList });
+  hundleOnSubmit = event => {
+    event.preventDefault();
+    console.log(event.currentTarget.elements.search.value);
+    const value = event.currentTarget.elements.search.value;
+    this.setState({ searchQuery: value });
+    // event.currentTarget.reset();
   };
 
   render() {
-    const { contacts, filter } = this.state;
-    const arrayWhithFindedContacts = contacts.filter(contact => {
-      const contactName = contact.name.toLowerCase().split(' ');
-      const statusArray = contactName.map(item => item.startsWith(filter));
-      return statusArray.includes(true);
-    });
+    const { imageGallery, isLoading } = this.state;
 
     return (
-      <div className={styles.app_container}>
-        <h2 className={styles.title_phonebook}>Phonebook</h2>
-        <ContactForm addContact={this.handleAddContact} />
-        <h2 className={styles.title_contacts}>Contacts</h2>
-        <Filter filter={filter} findContacts={this.handleFindContacts} />
-        <ContactList
-          arrayContacts={arrayWhithFindedContacts}
-          deleteContact={this.handleDeleteContact}
-        />
+      <div className={styles.App}>
+        <span>Hello</span>
+        <Searchbar onSubmit={this.hundleOnSubmit} />
+        <ImageGallery imageGallery={imageGallery} />
+        {isLoading && <Loader />}
+        <Button />
       </div>
     );
   }
 }
+//         <Modal />
+//         <Button />
