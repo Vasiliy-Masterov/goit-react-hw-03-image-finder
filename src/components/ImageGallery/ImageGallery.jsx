@@ -2,16 +2,23 @@ import PropTypes from 'prop-types';
 import styles from './ImageGallery.module.css';
 import { ImageGalleryItem } from './ImageGalleryItem';
 
-export const ImageGallery = ({ imageGallery }) => {
+export const ImageGallery = ({ imageGallery, showLargeImage }) => {
   return (
     <ul className={styles.ImageGallery}>
-      {imageGallery.map(({ id, webformatURL, tags }) => (
-        <ImageGalleryItem id={id} webformatURL={webformatURL} tags={tags} />
+      {imageGallery.map(({ id, webformatURL, tags, largeImageURL }) => (
+        <ImageGalleryItem
+          id={id}
+          webformatURL={webformatURL}
+          tags={tags}
+          showLargeImage={showLargeImage}
+          largeImageURL={largeImageURL}
+        />
       ))}
     </ul>
   );
 };
 
 ImageGallery.propTypes = {
-  img: PropTypes.string,
+  imageGallery: PropTypes.array.isRequired,
+  showLargeImage: PropTypes.func.isRequired,
 };

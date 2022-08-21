@@ -1,28 +1,19 @@
-// Компонент принимает один проп onSubmit -
-// функцию для передачи значения инпута при сабмите формы.
-// Создает DOM - элемент следующей структуры.
 import PropTypes from 'prop-types';
 import styles from './Searchbar.module.css';
+import { ReactComponent as SearchIcon } from './icons/search_icon.svg';
 
 export const Searchbar = ({ onSubmit }) => {
-  //  hundleOnSubmit = event => {
-  //    event.preventDefault();
-  //    console.log(event.target.value);
-  //     this.setState({ searchQuery: event.target.value});
-  //   };
-
   return (
     <header className={styles.Searchbar}>
       <form className={styles.SearchForm} onSubmit={onSubmit}>
         <button type="submit" className={styles.SearchForm_button}>
-          <span class={styles.SearchForm_button_lable}>Search</span>
+          <SearchIcon className={styles.SearchForm_icon} />
         </button>
-
         <input
           className={styles.SearchForm_input}
           type="text"
-          autocomplete="off"
-          autofocus
+          autoComplete="off"
+          autoFocus
           placeholder="Search images and photos"
           name="search"
         />

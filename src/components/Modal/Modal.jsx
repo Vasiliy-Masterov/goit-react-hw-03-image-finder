@@ -1,103 +1,42 @@
-// При клике по элементу галереи должно открываться модальное окно
-// с темным оверлеем и отображаться большая версия изображения.
-// Модальное окно должно закрываться по нажатию клавиши ESC или
-// по клику на оверлее.
-
-// Внешний вид похож на функционал этого VanillaJS - плагина,
-// только вместо белого модального окна рендерится изображение
-// (в примере нажми Run).Анимацию делать не нужно!
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styles from './Modal.module.css';
-//import { galleryItems } from './gallery-items.js';
-import * as basicLightbox from 'basiclightbox';
 
-const galleryItem = {
-  preview:
-    'https://cdn.pixabay.com/photo/2019/05/14/16/43/himilayan-blue-poppy-4202825__340.jpg',
-  original:
-    'https://cdn.pixabay.com/photo/2019/05/14/16/43/himilayan-blue-poppy-4202825_1280.jpg',
-  description: 'Hokkaido Flower',
-};
+export class Modal extends Component {
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown);
+  }
 
-export const Modal = () => {
-  const showLargeImage = galleryItem => {
-    //event.preventDefault();
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
 
-    // if (!event.target.classList.contains("gallery__image")) {
-    // return;
-    // }
-
-    const largeImage = basicLightbox.create(
-      `
-      <div className={styles.Modal}>
-        <img
-          src="${galleryItem.source}"
-          alt="${galleryItem.alt}"
-      </div>
-    `,
-      {
-        onShow: instance => {
-          instance
-            .element()
-            .querySelector('img')
-            .addEventListener('click', () => {
-              instance.close();
-            });
-          document.addEventListener('keydown', event => {
-            if (event.code !== 'Escape') {
-              return;
-            }
-            instance.close();
-          });
-        },
-        onClose: instance => {
-          instance
-            .element()
-            .querySelector('img')
-            .removeEventListener('click', () => {});
-          document.removeEventListener('keydown', () => {});
-        },
-      }
-    );
-    largeImage.show();
+  handleKeyDown = event => {
+    if (event.code === 'Escape') {
+      this.props.closeModal();
+    }
   };
 
-  return <div className={styles.Overlay}>{showLargeImage(galleryItem)}</div>;
-};
+  handleBackdropClick = event => {
+    if (event.currentTarget === event.target) {
+      this.props.closeModal();
+    }
+  };
+  render() {
+    const { source, alt } = this.props;
+
+    return (
+      <div className={styles.Overlay} onClick={this.handleBackdropClick}>
+        <div className={styles.Modal}>
+          <img className={styles.Modal_image} src={source} alt={alt} />
+        </div>
+      </div>
+    );
+  }
+}
 
 Modal.propTypes = {
-  img: PropTypes.string,
+  source: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+  closeModal: PropTypes.func.isRequired,
 };
-
-// function showLargeImage(event) {
-//   event.preventDefault();
-
-//   if (!event.target.classList.contains("gallery__image")) {
-//   return;
-//   }
-
-//   const largeImage = basicLightbox.create(`
-//       <img
-//       src="${event.target.dataset.source}"
-//       alt="${event.target.alt}"
-//       />
-//     `,
-//     {
-//     onShow: (instance) => {
-//         instance.element().querySelector('img').addEventListener("click", () => {
-//          instance.close();
-//         });
-//         document.addEventListener("keydown", event => {
-//           if (event.code !== "Escape") {
-//             return;
-//           }
-//           instance.close();
-//         });
-//     },
-//     onClose: (instance) => {
-//         instance.element().querySelector('img').removeEventListener("click",() => {});
-//         document.removeEventListener("keydown", () => {});
-//       }
-//     });
-//  largeImage.show();
-// }

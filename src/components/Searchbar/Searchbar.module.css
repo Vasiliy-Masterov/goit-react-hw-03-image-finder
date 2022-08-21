@@ -7,6 +7,7 @@
   justify-content: center;
   align-items: center;
   min-height: 64px;
+  width: 100%;
   padding-right: 24px;
   padding-left: 24px;
   padding-top: 12px;
@@ -46,16 +47,10 @@
   opacity: 1;
 }
 
-.SearchForm_button_label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  clip-path: inset(50%);
-  border: 0;
+.SearchForm_icon {
+  width: 30px;
+  height: 30px;
+  fill: #000;
 }
 
 .SearchForm_input {
